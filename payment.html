@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="sw">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Warkel Movies - Payment</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #080808;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .box {
+      width: 100%;
+      max-width: 430px;
+      background: #171717;
+      border: 1px solid #292929;
+      border-radius: 12px;
+      padding: 25px;
+      margin: 20px;
+    }
+
+    .logo {
+      text-align: center;
+      color: #e50914;
+      font-size: 25px;
+      font-weight: bold;
+      margin-bottom: 25px;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+    }
+
+    .movie {
+      color: #aaa;
+      margin-bottom: 20px;
+    }
+
+    .price {
+      background: #0d0d0d;
+      border: 1px solid #333;
+      padding: 18px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .price strong {
+      color: #00d084;
+      font-size: 25px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #ccc;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      background: #0b0b0b;
+      border: 1px solid #333;
+      color: white;
+      border-radius: 6px;
+      outline: none;
+      margin-bottom: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: 0;
+      border-radius: 6px;
+      background: #e50914;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    button:hover {
+      background: #b20710;
+    }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 15px;
+      color: #aaa;
+      text-decoration: none;
+    }
+
+    #message {
+      text-align: center;
+      margin-top: 18px;
+      line-height: 1.5;
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+  <div class="logo">
+    🎬 Warkel Movies
+  </div>
+
+  <h2>💳 Lipa kwa Airtel Money</h2>
+
+  <div class="movie">
+    Movie:
+    <strong id="movieTitle">
+      Inapakia...
+    </strong>
+  </div>
+
+  <div class="price">
+
+    Bei ya Movie:
+
+    <br><br>
+
+    <strong id="moviePrice">
+      TSh 0
+    </strong>
+
+  </div>
+
+  <label>
+    Namba ya Airtel Money
+  </label>
+
+  <input
+    type="tel"
+    id="phone"
+    placeholder="Mfano: 07XXXXXXXX"
+    maxlength="10"
+  >
+
+  <button id="payButton">
+    💳 LIPA SASA
+  </button>
+
+  <div id="message"></div>
+
+  <a
+    href="index.html"
+    class="back"
+  >
+    ← Rudi Warkel Movies
+  </a>
+
+</div>
+
+
+<script>
+
+const params =
+  new URLSearchParams(
+    window.location.search
+  );
+
+
+const movieId =
+  params.get("movieId");
+
+
+const title =
+  params.get("title");
+
+
+const price =
+  Number(
+    params.get("price") || 0
+  );
+
+
+const downloadURL =
+  params.get("download") || "";
+
+
+document.getElementById(
+  "movieTitle"
+).textContent =
+  title || "Movie";
+
+
+document.getElementById(
+  "moviePrice"
+).textContent =
+  "TSh " +
+  price.toLocaleString();
+
+
+document.getElementById(
+  "payButton"
+).addEventListener(
+  "click",
+  function() {
+
+    const phone =
+      document
+        .getElementById("phone")
+        .value
+        .trim();
+
+    const message =
+      document.getElementById(
+        "message"
+      );
+
+
+    if (!phone) {
+
+      message.textContent =
+        "⚠️ Weka namba yako ya Airtel Money.";
+
+      message.style.color =
+        "orange";
+
+      return;
+
+    }
+
+
+    if (!/^0[67][0-9]{8}$/.test(phone)) {
+
+      message.textContent =
+        "⚠️ Weka namba sahihi ya simu.";
+
+      message.style.color =
+        "orange";
+
+      return;
+
+    }
+
+
+    message.textContent =
+      "⏳ Payment system bado haijaunganishwa na Airtel Money.";
+
+    message.style.color =
+      "#ffb000";
+
+
+    /*
+      HAPA NDIPO TUTAITA
+      BACKEND YA AIRTEL MONEY.
+
+      USIWEKE API KEY AU SECRET HAPA.
+    */
+
+    console.log({
+      movieId: movieId,
+      title: title,
+      price: price,
+      phone: phone,
+      downloadURL: downloadURL
+    });
+
+  }
+);
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,3668 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Warkel Movies - Admin Dashboard</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+color:white;
+min-height:100vh;
+
+background:
+radial-gradient(circle at 15% 20%,rgba(0,110,255,.85),transparent 35%),
+radial-gradient(circle at 80% 25%,rgba(0,230,120,.75),transparent 35%),
+radial-gradient(circle at 50% 85%,rgba(255,220,0,.65),transparent 40%),
+linear-gradient(135deg,#001a4d,#006b4f,#806d00);
+
+background-size:
+180% 180%,
+180% 180%,
+180% 180%,
+300% 300%;
+
+animation:bgMove 15s ease-in-out infinite alternate;
+}
+
+@keyframes bgMove{
+
+0%{
+background-position:
+0 0,
+100% 0,
+50% 100%,
+0 50%;
+}
+
+50%{
+background-position:
+60% 40%,
+20% 70%,
+80% 20%,
+50% 50%;
+}
+
+100%{
+background-position:
+100% 100%,
+0 100%,
+20% 0,
+100% 50%;
+}
+
+}
+
+body::before{
+content:"";
+position:fixed;
+inset:-100px;
+
+background:
+radial-gradient(circle at 20% 30%,rgba(0,120,255,.5),transparent 40%),
+radial-gradient(circle at 75% 30%,rgba(0,255,140,.45),transparent 40%),
+radial-gradient(circle at 50% 80%,rgba(255,230,0,.4),transparent 40%);
+
+filter:blur(80px);
+
+animation:blurMove 14s ease-in-out infinite alternate;
+
+pointer-events:none;
+
+z-index:-1;
+}
+
+@keyframes blurMove{
+
+0%{
+transform:translate(0,0) scale(1);
+}
+
+50%{
+transform:translate(200px,120px) scale(1.2);
+}
+
+100%{
+transform:translate(-150px,-100px) scale(.9);
+}
+
+}
+
+header{
+position:sticky;
+top:0;
+z-index:100;
+
+padding:17px 25px;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+background:rgba(0,0,0,.65);
+
+backdrop-filter:blur(15px);
+
+border-bottom:1px solid rgba(255,255,255,.15);
+}
+
+.logo{
+font-size:24px;
+font-weight:bold;
+}
+
+.logout{
+border:0;
+
+padding:10px 18px;
+
+border-radius:8px;
+
+background:#ff3b3b;
+
+color:white;
+
+font-weight:bold;
+
+cursor:pointer;
+}
+
+.container{
+width:92%;
+max-width:1200px;
+
+margin:30px auto;
+}
+
+.card{
+background:rgba(0,0,0,.55);
+
+padding:25px;
+
+border-radius:18px;
+
+margin-bottom:25px;
+
+backdrop-filter:blur(15px);
+
+border:1px solid rgba(255,255,255,.15);
+}
+
+h1,h2,h3{
+margin-top:0;
+}
+
+h2{
+color:#ffe000;
+}
+
+.tabs{
+display:flex;
+
+gap:10px;
+
+margin-bottom:20px;
+
+flex-wrap:wrap;
+}
+
+.tab-btn{
+border:0;
+
+padding:12px 20px;
+
+border-radius:9px;
+
+background:rgba(0,0,0,.45);
+
+color:white;
+
+font-weight:bold;
+
+cursor:pointer;
+
+border:1px solid rgba(255,255,255,.15);
+}
+
+.tab-btn.active{
+background:linear-gradient(90deg,#006eff,#00b978);
+}
+
+.tab-content{
+display:none;
+}
+
+.tab-content.active{
+display:block;
+}
+
+label{
+display:block;
+
+margin-top:8px;
+
+font-weight:bold;
+}
+
+input,
+select,
+textarea{
+width:100%;
+
+padding:13px;
+
+margin:7px 0 15px;
+
+border-radius:9px;
+
+border:1px solid rgba(255,255,255,.2);
+
+background:rgba(0,0,0,.5);
+
+color:white;
+
+outline:none;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+border-color:#00d9ff;
+}
+
+textarea{
+min-height:100px;
+
+resize:vertical;
+}
+
+select option{
+color:black;
+}
+
+.btn{
+border:0;
+
+padding:13px 20px;
+
+border-radius:9px;
+
+color:white;
+
+font-weight:bold;
+
+cursor:pointer;
+}
+
+.primary{
+background:linear-gradient(90deg,#006eff,#00b978);
+}
+
+.secondary{
+background:#555;
+}
+
+.red{
+background:#e83232;
+}
+
+.yellow{
+background:#e3a900;
+
+color:#111;
+}
+
+.status{
+padding:12px;
+
+margin-bottom:15px;
+
+border-radius:8px;
+
+background:rgba(0,0,0,.5);
+
+display:none;
+}
+
+.grid{
+display:grid;
+
+grid-template-columns:
+repeat(auto-fill,minmax(200px,1fr));
+
+gap:20px;
+}
+
+.item{
+background:rgba(0,0,0,.65);
+
+border-radius:15px;
+
+overflow:hidden;
+
+border:1px solid rgba(255,255,255,.15);
+
+box-shadow:
+0 10px 30px rgba(0,0,0,.25);
+}
+
+.item img{
+width:100%;
+
+height:280px;
+
+object-fit:cover;
+
+display:block;
+}
+
+.item-info{
+padding:15px;
+}
+
+.item-info h3{
+margin-bottom:8px;
+}
+
+.badge{
+display:inline-block;
+
+padding:5px 10px;
+
+border-radius:20px;
+
+font-size:12px;
+
+margin-bottom:10px;
+
+background:#1687ff;
+}
+
+.badge.paid{
+background:#e3a900;
+
+color:#111;
+}
+
+.actions{
+display:flex;
+
+gap:8px;
+
+margin-top:12px;
+}
+
+.actions button{
+flex:1;
+
+border:0;
+
+padding:9px;
+
+border-radius:7px;
+
+color:white;
+
+font-weight:bold;
+
+cursor:pointer;
+}
+
+.edit{
+background:#087cff;
+}
+
+.delete{
+background:#e83232;
+}
+
+.series-card{
+background:rgba(0,0,0,.65);
+
+border:1px solid rgba(255,255,255,.15);
+
+border-radius:15px;
+
+padding:15px;
+
+margin-bottom:15px;
+}
+
+.series-header{
+display:flex;
+
+gap:15px;
+
+align-items:center;
+}
+
+.series-header img{
+width:90px;
+
+height:120px;
+
+object-fit:cover;
+
+border-radius:8px;
+}
+
+.series-title{
+flex:1;
+}
+
+.season{
+margin-top:15px;
+
+padding:15px;
+
+background:rgba(255,255,255,.06);
+
+border-radius:10px;
+}
+
+.episode{
+display:flex;
+
+align-items:center;
+
+justify-content:space-between;
+
+gap:10px;
+
+padding:10px;
+
+margin-top:8px;
+
+background:rgba(0,0,0,.4);
+
+border-radius:8px;
+}
+
+.episode-actions{
+display:flex;
+
+gap:6px;
+}
+
+.small-btn{
+border:0;
+
+padding:7px 10px;
+
+border-radius:6px;
+
+color:white;
+
+font-weight:bold;
+
+cursor:pointer;
+}
+
+.empty{
+text-align:center;
+
+padding:30px;
+
+color:#ddd;
+}
+
+.episode-box{
+padding:18px;
+
+background:rgba(0,0,0,.35);
+
+border-radius:12px;
+
+margin-bottom:15px;
+
+border:1px solid rgba(255,255,255,.1);
+}
+
+.remove-episode{
+background:#e83232;
+
+color:white;
+
+border:0;
+
+padding:8px 12px;
+
+border-radius:7px;
+
+cursor:pointer;
+
+font-weight:bold;
+}
+
+
+/* ================= PAYMENT ================= */
+
+.payment-stats{
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(180px,1fr));
+
+gap:15px;
+
+margin-bottom:20px;
+}
+
+.payment-stat{
+padding:20px;
+
+border-radius:15px;
+
+background:rgba(0,0,0,.45);
+
+border:1px solid rgba(255,255,255,.12);
+
+text-align:center;
+}
+
+.payment-stat strong{
+display:block;
+
+font-size:28px;
+
+margin-top:8px;
+}
+
+.pending-number{
+color:#ffd000;
+}
+
+.approved-number{
+color:#00ff91;
+}
+
+.rejected-number{
+color:#ff6262;
+}
+
+.payment-list{
+display:grid;
+
+gap:15px;
+}
+
+.payment-card{
+background:rgba(0,0,0,.65);
+
+border:1px solid rgba(255,255,255,.15);
+
+border-radius:15px;
+
+padding:18px;
+}
+
+.payment-header{
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+gap:10px;
+
+margin-bottom:15px;
+}
+
+.payment-header h3{
+margin:0;
+}
+
+.payment-status{
+display:inline-block;
+
+padding:7px 12px;
+
+border-radius:20px;
+
+font-size:12px;
+
+font-weight:bold;
+}
+
+.status-pending{
+background:#e3a900;
+
+color:#111;
+}
+
+.status-approved{
+background:#00b978;
+
+color:white;
+}
+
+.status-rejected{
+background:#e83232;
+
+color:white;
+}
+
+.payment-info{
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(220px,1fr));
+
+gap:10px;
+}
+
+.payment-info div{
+padding:10px;
+
+background:rgba(255,255,255,.05);
+
+border-radius:8px;
+}
+
+.payment-label{
+display:block;
+
+font-size:12px;
+
+color:#aaa;
+
+margin-bottom:4px;
+}
+
+.payment-value{
+font-weight:bold;
+
+word-break:break-word;
+}
+
+.payment-actions{
+display:flex;
+
+gap:10px;
+
+margin-top:15px;
+
+flex-wrap:wrap;
+}
+
+.approve-btn{
+background:#00b978;
+
+border:0;
+
+padding:12px 18px;
+
+border-radius:8px;
+
+color:white;
+
+font-weight:bold;
+
+cursor:pointer;
+}
+
+.reject-btn{
+background:#e83232;
+
+border:0;
+
+padding:12px 18px;
+
+border-radius:8px;
+
+color:white;
+
+font-weight:bold;
+
+cursor:pointer;
+}
+
+.payment-loading{
+text-align:center;
+
+padding:25px;
+
+color:#ddd;
+}
+
+.payment-error{
+padding:18px;
+
+background:rgba(232,50,50,.2);
+
+border:1px solid #e83232;
+
+border-radius:10px;
+
+color:#fff;
+}
+
+.no-payments{
+text-align:center;
+
+padding:30px;
+
+color:#ddd;
+
+background:rgba(0,0,0,.25);
+
+border-radius:12px;
+}
+
+@media(max-width:650px){
+
+header{
+padding:14px;
+}
+
+.logo{
+font-size:19px;
+}
+
+.container{
+width:94%;
+}
+
+.grid{
+grid-template-columns:repeat(2,1fr);
+
+gap:12px;
+}
+
+.item img{
+height:230px;
+}
+
+.series-header img{
+width:70px;
+
+height:95px;
+}
+
+.episode{
+flex-direction:column;
+
+align-items:flex-start;
+}
+
+.episode-actions{
+width:100%;
+}
+
+.episode-actions button{
+flex:1;
+}
+
+.payment-header{
+flex-direction:column;
+
+align-items:flex-start;
+}
+
+.payment-info{
+grid-template-columns:1fr;
+}
+
+.payment-actions{
+width:100%;
+}
+
+.payment-actions button{
+width:100%;
+}
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<header>
+
+<div class="logo">
+🎬 Warkel Movies
+</div>
+
+<button class="logout" onclick="logout()">
+Logout
+</button>
+
+</header>
+
+
+<main class="container">
+
+
+<div class="card">
+
+<h1>Admin Dashboard</h1>
+
+<p>
+Simamia Movies, TV Series na malipo ya Warkel Movies.
+</p>
+
+</div>
+
+
+<div class="card">
+
+
+<div class="tabs">
+
+<button
+class="tab-btn active"
+onclick="openTab('movieTab',this)"
+>
+🎬 Add Movie
+</button>
+
+
+<button
+class="tab-btn"
+onclick="openTab('seriesTab',this)"
+>
+📺 Add Series
+</button>
+
+
+<button
+class="tab-btn"
+onclick="openTab('paymentTab',this)"
+>
+💰 Payments
+</button>
+
+</div>
+
+
+
+<!-- ================= MOVIE ================= -->
+
+<div
+id="movieTab"
+class="tab-content active"
+>
+
+<h2>🎬 Add Movie</h2>
+
+<div
+id="movieStatus"
+class="status"
+></div>
+
+
+<label>
+Movie Title
+</label>
+
+<input
+id="movieTitle"
+placeholder="Mfano: Avengers"
+>
+
+
+<label>
+Category
+</label>
+
+<select id="movieCategory">
+
+<option value="Action">
+🎬 Action
+</option>
+
+<option value="Comedy">
+😂 Comedy
+</option>
+
+<option value="Horror">
+👻 Horror
+</option>
+
+<option value="Drama">
+❤️ Drama
+</option>
+
+<option value="Animation">
+🎨 Animation
+</option>
+
+<option value="Translated">
+🌍 Zilizotafsiriwa
+</option>
+
+</select>
+
+
+<label>
+Description
+</label>
+
+<textarea
+id="movieDescription"
+placeholder="Maelezo ya movie..."
+></textarea>
+
+
+<label>
+Movie Type
+</label>
+
+<select id="movieType">
+
+<option value="Free">
+🆓 Free
+</option>
+
+<option value="Paid">
+💰 Paid
+</option>
+
+</select>
+
+
+<label>
+Price
+</label>
+
+<input
+type="number"
+id="moviePrice"
+placeholder="Mfano: 2000"
+>
+
+
+<label>
+Poster URL
+</label>
+
+<input
+id="moviePoster"
+placeholder="https://..."
+>
+
+
+<label>
+Watch URL
+</label>
+
+<input
+id="movieURL"
+placeholder="https://..."
+>
+
+
+<label>
+Download URL
+</label>
+
+<input
+id="movieDownload"
+placeholder="https://..."
+>
+
+
+<button
+class="btn primary"
+onclick="saveMovie()"
+>
+➕ Add Movie
+</button>
+
+</div>
+
+
+
+<!-- ================= SERIES ================= -->
+
+<div
+id="seriesTab"
+class="tab-content"
+>
+
+<h2>
+📺 Add TV Series
+</h2>
+
+
+<div
+id="seriesStatus"
+class="status"
+></div>
+
+
+<label>
+Series Name
+</label>
+
+<input
+id="seriesTitle"
+placeholder="Mfano: Money Heist"
+>
+
+
+<label>
+Category
+</label>
+
+<select id="seriesCategory">
+
+<option value="Action">
+🎬 Action
+</option>
+
+<option value="Comedy">
+😂 Comedy
+</option>
+
+<option value="Horror">
+👻 Horror
+</option>
+
+<option value="Drama">
+❤️ Drama
+</option>
+
+<option value="Animation">
+🎨 Animation
+</option>
+
+<option value="Translated">
+🌍 Zilizotafsiriwa
+</option>
+
+</select>
+
+
+<label>
+Description
+</label>
+
+<textarea
+id="seriesDescription"
+placeholder="Maelezo ya series..."
+></textarea>
+
+
+<label>
+Series Type
+</label>
+
+<select id="seriesType">
+
+<option value="Free">
+🆓 Free
+</option>
+
+<option value="Paid">
+💰 Paid
+</option>
+
+</select>
+
+
+<label>
+Price
+</label>
+
+<input
+type="number"
+id="seriesPrice"
+placeholder="Mfano: 5000"
+>
+
+
+<label>
+Poster URL
+</label>
+
+<input
+id="seriesPoster"
+placeholder="https://..."
+>
+
+
+<h3>
+📺 Seasons & Episodes
+</h3>
+
+
+<div id="seasons"></div>
+
+
+<button
+class="btn yellow"
+onclick="addSeason()"
+>
+➕ Add Season
+</button>
+
+
+<br>
+<br>
+
+
+<button
+class="btn primary"
+onclick="saveSeries()"
+>
+📺 Save Series
+</button>
+
+</div>
+
+
+
+<!-- ================= PAYMENT ================= -->
+
+<div
+id="paymentTab"
+class="tab-content"
+>
+
+<h2>
+💰 Payment Approval
+</h2>
+
+
+<p>
+Hapa utaona malipo ambayo users wametuma.
+Thibitisha kwanza Airtel Money kama pesa imeingia,
+kisha bonyeza APPROVE.
+</p>
+
+
+<div class="payment-stats">
+
+
+<div class="payment-stat">
+
+⏳ Pending
+
+<strong
+id="pendingCount"
+class="pending-number"
+>
+0
+</strong>
+
+</div>
+
+
+<div class="payment-stat">
+
+✅ Approved
+
+<strong
+id="approvedCount"
+class="approved-number"
+>
+0
+</strong>
+
+</div>
+
+
+<div class="payment-stat">
+
+❌ Rejected
+
+<strong
+id="rejectedCount"
+class="rejected-number"
+>
+0
+</strong>
+
+</div>
+
+
+</div>
+
+
+<div id="paymentList">
+
+<div class="payment-loading">
+
+⏳ Inapakia malipo...
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- ================= MOVIES ================= -->
+
+<div class="card">
+
+<h2>
+🎬 Movies
+</h2>
+
+
+<div
+id="movies"
+class="grid"
+>
+
+<div class="empty">
+⏳ Loading movies...
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- ================= SERIES ================= -->
+
+<div class="card">
+
+<h2>
+📺 TV Series
+</h2>
+
+
+<div id="seriesList">
+
+<div class="empty">
+⏳ Loading series...
+</div>
+
+</div>
+
+</div>
+
+
+</main>
+
+
+
+<script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-auth-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore-compat.js"></script>
+
+
+<script>
+
+
+/* ================= FIREBASE ================= */
+
+const firebaseConfig = {
+
+apiKey:
+"AIzaSyDEqZX4tJ4Y8LnyuDCal_6OyF6bvEW5Dpk",
+
+authDomain:
+"warkel-movies.firebaseapp.com",
+
+projectId:
+"warkel-movies",
+
+storageBucket:
+"warkel-movies.firebasestorage.app",
+
+messagingSenderId:
+"1087357366041",
+
+appId:
+"1:1087357366041:web:b62ba5e42da9e0792f1f88"
+
+};
+
+
+firebase.initializeApp(firebaseConfig);
+
+
+const auth =
+firebase.auth();
+
+
+const db =
+firebase.firestore();
+
+
+
+/* ================= TAB ================= */
+
+function openTab(id,button){
+
+document
+.querySelectorAll(".tab-content")
+.forEach(tab => {
+
+tab.classList.remove("active");
+
+});
+
+
+document
+.querySelectorAll(".tab-btn")
+.forEach(btn => {
+
+btn.classList.remove("active");
+
+});
+
+
+document
+.getElementById(id)
+.classList.add("active");
+
+
+button.classList.add("active");
+
+}
+
+
+
+/* ================= STATUS ================= */
+
+function showStatus(id,message){
+
+const box =
+document.getElementById(id);
+
+box.textContent =
+message;
+
+box.style.display =
+"block";
+
+
+setTimeout(() => {
+
+box.style.display =
+"none";
+
+},5000);
+
+}
+
+
+
+/* ================= MOVIE ================= */
+
+async function saveMovie(){
+
+const title =
+document
+.getElementById("movieTitle")
+.value
+.trim();
+
+
+if(!title){
+
+showStatus(
+"movieStatus",
+"⚠️ Weka jina la movie."
+);
+
+return;
+
+}
+
+
+const data = {
+
+title:title,
+
+category:
+document
+.getElementById("movieCategory")
+.value,
+
+description:
+document
+.getElementById("movieDescription")
+.value
+.trim(),
+
+type:
+document
+.getElementById("movieType")
+.value,
+
+price:
+Number(
+document
+.getElementById("moviePrice")
+.value
+)||0,
+
+poster:
+document
+.getElementById("moviePoster")
+.value
+.trim(),
+
+url:
+document
+.getElementById("movieURL")
+.value
+.trim(),
+
+downloadUrl:
+document
+.getElementById("movieDownload")
+.value
+.trim(),
+
+createdAt:
+firebase.firestore
+.FieldValue
+.serverTimestamp(),
+
+updatedAt:
+firebase.firestore
+.FieldValue
+.serverTimestamp()
+
+};
+
+
+try{
+
+await db
+.collection("movies")
+.add(data);
+
+
+showStatus(
+"movieStatus",
+"✅ Movie imeongezwa Firebase."
+);
+
+
+clearMovieForm();
+
+
+}catch(error){
+
+console.error(error);
+
+
+showStatus(
+"movieStatus",
+"❌ Imeshindikana: "+
+error.message
+);
+
+}
+
+}
+
+
+
+function clearMovieForm(){
+
+document
+.getElementById("movieTitle")
+.value="";
+
+
+document
+.getElementById("movieDescription")
+.value="";
+
+
+document
+.getElementById("moviePrice")
+.value="";
+
+
+document
+.getElementById("moviePoster")
+.value="";
+
+
+document
+.getElementById("movieURL")
+.value="";
+
+
+document
+.getElementById("movieDownload")
+.value="";
+
+}
+
+
+
+/* ================= LOAD MOVIES ================= */
+
+db.collection("movies")
+.onSnapshot(snapshot => {
+
+const container =
+document.getElementById("movies");
+
+
+if(snapshot.empty){
+
+container.innerHTML = `
+
+<div class="empty">
+
+🎬 Hakuna movies bado.
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+container.innerHTML = "";
+
+
+snapshot.forEach(doc => {
+
+displayMovie(
+doc.id,
+doc.data(),
+container
+);
+
+});
+
+
+},error => {
+
+document
+.getElementById("movies")
+.innerHTML = `
+
+<div class="empty">
+
+❌ Imeshindikana kupakia movies.
+
+<br><br>
+
+${escapeHtml(error.message)}
+
+</div>
+
+`;
+
+});
+
+
+
+function displayMovie(
+id,
+movie,
+container
+){
+
+const card =
+document.createElement("div");
+
+
+card.className =
+"item";
+
+
+const poster =
+movie.poster ||
+"https://via.placeholder.com/300x400?text=Warkel+Movies";
+
+
+const type =
+movie.type ||
+"Free";
+
+
+card.innerHTML = `
+
+<img
+src="${escapeAttr(poster)}"
+alt="${escapeAttr(movie.title||"Movie")}"
+onerror="this.src='https://via.placeholder.com/300x400?text=Warkel+Movies'"
+>
+
+
+<div class="item-info">
+
+<h3>
+
+${escapeHtml(
+movie.title ||
+"Untitled"
+)}
+
+</h3>
+
+
+<span class="badge ${
+type==="Paid"?"paid":""
+}">
+
+${
+type==="Paid"
+?"💰 PAID"
+:"🆓 FREE"
+}
+
+</span>
+
+
+<p>
+
+📂 ${
+escapeHtml(
+movie.category ||
+"Other"
+)
+}
+
+</p>
+
+
+${
+type==="Paid"
+?
+
+`<p>
+
+💵 ${
+escapeHtml(
+String(
+movie.price ||
+0
+)
+)
+}
+
+</p>`
+
+:
+
+""
+
+}
+
+
+<div class="actions">
+
+
+<button
+class="edit"
+onclick="editMovie('${id}')"
+>
+
+✏️ Edit
+
+</button>
+
+
+<button
+class="delete"
+onclick="deleteMovie('${id}')"
+>
+
+🗑️ Delete
+
+</button>
+
+
+</div>
+
+</div>
+
+`;
+
+
+container.appendChild(card);
+
+}
+
+
+
+/* ================= DELETE MOVIE ================= */
+
+async function deleteMovie(id){
+
+if(!confirm(
+"Una uhakika unataka kufuta movie hii?"
+))
+return;
+
+
+try{
+
+await db
+.collection("movies")
+.doc(id)
+.delete();
+
+
+alert(
+"✅ Movie imefutwa."
+);
+
+
+}catch(error){
+
+alert(
+"❌ Imeshindikana kufuta movie:\n"+
+error.message
+);
+
+}
+
+}
+
+
+
+/* ================= SERIES ================= */
+
+let seasonCounter = 0;
+
+
+function addSeason(){
+
+seasonCounter++;
+
+
+const season =
+document.createElement("div");
+
+
+season.className =
+"episode-box";
+
+
+season.innerHTML = `
+
+<h3>
+📺 Season ${seasonCounter}
+</h3>
+
+
+<input
+class="season-name"
+placeholder="Mfano: Season 1"
+value="Season ${seasonCounter}"
+>
+
+
+<div class="episodes"></div>
+
+
+<button
+class="btn primary"
+onclick="addEpisode(this)"
+>
+
+➕ Add Episode
+
+</button>
+
+
+<button
+class="remove-episode"
+onclick="this.parentElement.remove()"
+>
+
+🗑️ Remove Season
+
+</button>
+
+`;
+
+
+document
+.getElementById("seasons")
+.appendChild(season);
+
+
+addEpisode(
+season.querySelector(".primary")
+);
+
+}
+
+
+
+function addEpisode(button){
+
+const season =
+button.closest(".episode-box");
+
+
+const episodes =
+season.querySelector(".episodes");
+
+
+const number =
+episodes.children.length+1;
+
+
+const episode =
+document.createElement("div");
+
+
+episode.className =
+"episode-box";
+
+
+episode.innerHTML = `
+
+<h4>
+🎞️ Episode ${number}
+</h4>
+
+
+<label>
+Episode Name
+</label>
+
+
+<input
+class="episode-name"
+placeholder="Episode ${number}"
+value="Episode ${number}"
+>
+
+
+<label>
+Watch URL
+</label>
+
+
+<input
+class="episode-url"
+placeholder="https://..."
+>
+
+
+<label>
+Download URL
+</label>
+
+
+<input
+class="episode-download"
+placeholder="https://..."
+>
+
+
+<button
+class="remove-episode"
+onclick="this.parentElement.remove()"
+>
+
+🗑️ Remove Episode
+
+</button>
+
+`;
+
+
+episodes.appendChild(episode);
+
+}
+
+
+
+/* ================= SAVE SERIES ================= */
+
+async function saveSeries(){
+
+const title =
+document
+.getElementById("seriesTitle")
+.value
+.trim();
+
+
+if(!title){
+
+showStatus(
+"seriesStatus",
+"⚠️ Weka jina la Series."
+);
+
+return;
+
+}
+
+
+const seasonElements =
+document.querySelectorAll(
+"#seasons > .episode-box"
+);
+
+
+const seasons = [];
+
+
+seasonElements.forEach(
+seasonElement => {
+
+
+const name =
+seasonElement
+.querySelector(".season-name")
+.value
+.trim();
+
+
+const episodeElements =
+seasonElement
+.querySelectorAll(
+".episodes > .episode-box"
+);
+
+
+const episodes = [];
+
+
+episodeElements.forEach(
+episodeElement => {
+
+
+episodes.push({
+
+name:
+episodeElement
+.querySelector(".episode-name")
+.value
+.trim(),
+
+url:
+episodeElement
+.querySelector(".episode-url")
+.value
+.trim(),
+
+downloadUrl:
+episodeElement
+.querySelector(".episode-download")
+.value
+.trim()
+
+});
+
+});
+
+
+seasons.push({
+
+name:name,
+
+episodes:episodes
+
+});
+
+});
+
+
+if(!seasons.length){
+
+showStatus(
+"seriesStatus",
+"⚠️ Ongeza angalau Season moja."
+);
+
+return;
+
+}
+
+
+const data = {
+
+title:title,
+
+category:
+document
+.getElementById("seriesCategory")
+.value,
+
+description:
+document
+.getElementById("seriesDescription")
+.value
+.trim(),
+
+type:
+document
+.getElementById("seriesType")
+.value,
+
+price:
+Number(
+document
+.getElementById("seriesPrice")
+.value
+)||0,
+
+poster:
+document
+.getElementById("seriesPoster")
+.value
+.trim(),
+
+seasons:seasons,
+
+createdAt:
+firebase.firestore
+.FieldValue
+.serverTimestamp(),
+
+updatedAt:
+firebase.firestore
+.FieldValue
+.serverTimestamp()
+
+};
+
+
+try{
+
+await db
+.collection("series")
+.add(data);
+
+
+showStatus(
+"seriesStatus",
+"✅ Series imehifadhiwa Firebase."
+);
+
+
+document
+.getElementById("seriesTitle")
+.value="";
+
+
+document
+.getElementById("seriesDescription")
+.value="";
+
+
+document
+.getElementById("seriesPrice")
+.value="";
+
+
+document
+.getElementById("seriesPoster")
+.value="";
+
+
+document
+.getElementById("seasons")
+.innerHTML="";
+
+
+seasonCounter=0;
+
+
+}catch(error){
+
+showStatus(
+"seriesStatus",
+"❌ Imeshindikana: "+
+error.message
+);
+
+}
+
+}
+
+
+
+/* ================= LOAD SERIES ================= */
+
+db.collection("series")
+.onSnapshot(snapshot => {
+
+const container =
+document.getElementById("seriesList");
+
+
+if(snapshot.empty){
+
+container.innerHTML = `
+
+<div class="empty">
+
+📺 Hakuna Series bado.
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+container.innerHTML="";
+
+
+snapshot.forEach(doc => {
+
+displaySeries(
+doc.id,
+doc.data(),
+container
+);
+
+});
+
+
+},error => {
+
+document
+.getElementById("seriesList")
+.innerHTML = `
+
+<div class="empty">
+
+❌ Imeshindikana kupakia Series.
+
+<br><br>
+
+${escapeHtml(error.message)}
+
+</div>
+
+`;
+
+});
+
+
+
+function displaySeries(
+id,
+series,
+container
+){
+
+const card =
+document.createElement("div");
+
+
+card.className =
+"series-card";
+
+
+let seasonsHTML="";
+
+
+(series.seasons||[])
+.forEach((season,index) => {
+
+
+let episodesHTML="";
+
+
+(season.episodes||[])
+.forEach(
+(episode,episodeIndex) => {
+
+
+episodesHTML += `
+
+<div class="episode">
+
+<div>
+
+🎞️ ${
+escapeHtml(
+episode.name ||
+"Episode "+(episodeIndex+1)
+)
+}
+
+</div>
+
+
+<div class="episode-actions">
+
+${
+episode.url
+?
+
+`<a
+href="${escapeAttr(episode.url)}"
+target="_blank"
+class="small-btn edit"
+style="text-decoration:none"
+>
+
+▶ Watch
+
+</a>`
+
+:
+
+""
+}
+
+</div>
+
+</div>
+
+`;
+
+});
+
+
+seasonsHTML += `
+
+<div class="season">
+
+<strong>
+
+📺 ${
+escapeHtml(
+season.name ||
+"Season "+(index+1)
+)
+}
+
+</strong>
+
+
+${episodesHTML}
+
+</div>
+
+`;
+
+});
+
+
+card.innerHTML = `
+
+<div class="series-header">
+
+
+<img
+src="${escapeAttr(
+series.poster ||
+"https://via.placeholder.com/300x400?text=Warkel+Movies"
+)}"
+
+onerror="this.src='https://via.placeholder.com/300x400?text=Warkel+Movies'"
+>
+
+
+<div class="series-title">
+
+
+<h3>
+
+📺 ${
+escapeHtml(
+series.title ||
+"Series"
+)
+}
+
+</h3>
+
+
+<p>
+
+📂 ${
+escapeHtml(
+series.category ||
+"Other"
+)
+}
+
+</p>
+
+
+<span class="badge ${
+series.type==="Paid"
+?"paid":""
+}">
+
+${
+series.type==="Paid"
+?"💰 PAID"
+:"🆓 FREE"
+}
+
+</span>
+
+
+</div>
+
+</div>
+
+
+${seasonsHTML}
+
+
+<div class="actions">
+
+
+<button
+class="delete"
+onclick="deleteSeries('${id}')"
+>
+
+🗑️ Delete Series
+
+</button>
+
+
+</div>
+
+`;
+
+
+container.appendChild(card);
+
+}
+
+
+
+/* ================= DELETE SERIES ================= */
+
+async function deleteSeries(id){
+
+if(!confirm(
+"Una uhakika unataka kufuta Series hii yote?"
+))
+return;
+
+
+try{
+
+await db
+.collection("series")
+.doc(id)
+.delete();
+
+
+alert(
+"✅ Series imefutwa."
+);
+
+
+}catch(error){
+
+alert(
+"❌ Imeshindikana kufuta Series:\n"+
+error.message
+);
+
+}
+
+}
+
+
+
+/* ================= EDIT MOVIE ================= */
+
+async function editMovie(id){
+
+try{
+
+const doc =
+await db
+.collection("movies")
+.doc(id)
+.get();
+
+
+if(!doc.exists){
+
+alert(
+"Movie haipo."
+);
+
+return;
+
+}
+
+
+const movie =
+doc.data();
+
+
+document
+.getElementById("movieTitle")
+.value =
+movie.title || "";
+
+
+document
+.getElementById("movieCategory")
+.value =
+movie.category || "Action";
+
+
+document
+.getElementById("movieDescription")
+.value =
+movie.description || "";
+
+
+document
+.getElementById("movieType")
+.value =
+movie.type || "Free";
+
+
+document
+.getElementById("moviePrice")
+.value =
+movie.price || "";
+
+
+document
+.getElementById("moviePoster")
+.value =
+movie.poster || "";
+
+
+document
+.getElementById("movieURL")
+.value =
+movie.url || "";
+
+
+document
+.getElementById("movieDownload")
+.value =
+movie.downloadUrl || "";
+
+
+openTab(
+"movieTab",
+document.querySelector(".tab-btn")
+);
+
+
+alert(
+"Taarifa zimejazwa kwenye form. Kwa kubadilisha movie, delete ya zamani na add mpya ndiyo njia inayotumika sasa."
+);
+
+
+}catch(error){
+
+alert(
+"❌ "+
+error.message
+);
+
+}
+
+}
+
+
+
+/* =====================================================
+   PAYMENT SYSTEM
+===================================================== */
+
+let paymentCache = [];
+
+let paymentListenerStarted = false;
+
+
+
+/* ================= NORMALIZE ================= */
+
+function normalizePayment(data){
+
+const payment = {
+...data
+};
+
+
+payment.status =
+String(
+payment.status ||
+payment.paymentStatus ||
+"pending"
+)
+.toLowerCase()
+.trim();
+
+
+return payment;
+
+}
+
+
+
+/* ================= LOAD PAYMENTS ================= */
+
+function loadPayments(){
+
+if(paymentListenerStarted)
+return;
+
+
+paymentListenerStarted = true;
+
+
+const container =
+document.getElementById(
+"paymentList"
+);
+
+
+container.innerHTML = `
+
+<div class="payment-loading">
+
+⏳ Inapakia malipo kutoka Firebase...
+
+</div>
+
+`;
+
+
+db.collection("payments")
+.onSnapshot(snapshot => {
+
+
+paymentCache = [];
+
+
+snapshot.forEach(doc => {
+
+paymentCache.push({
+
+id:doc.id,
+
+...normalizePayment(
+doc.data()
+)
+
+});
+
+});
+
+
+paymentCache.sort(
+sortPayments
+);
+
+
+renderPayments();
+
+
+},error => {
+
+
+console.error(
+"PAYMENT ERROR:",
+error
+);
+
+
+showPaymentError(
+error.message
+);
+
+});
+
+}
+
+
+
+/* ================= SORT ================= */
+
+function sortPayments(a,b){
+
+return getTimestampMillis(
+b.createdAt
+)
+-
+getTimestampMillis(
+a.createdAt
+);
+
+}
+
+
+
+function getTimestampMillis(timestamp){
+
+if(!timestamp)
+return 0;
+
+
+if(
+timestamp.toMillis &&
+typeof timestamp.toMillis ===
+"function"
+){
+
+return timestamp.toMillis();
+
+}
+
+
+if(timestamp.seconds){
+
+return Number(
+timestamp.seconds
+) * 1000;
+
+}
+
+
+return 0;
+
+}
+
+
+
+/* ================= PAYMENT ERROR ================= */
+
+function showPaymentError(message){
+
+document
+.getElementById("paymentList")
+.innerHTML = `
+
+<div class="payment-error">
+
+❌
+
+<strong>
+Imeshindikana kupakia Payments
+</strong>
+
+<br><br>
+
+${escapeHtml(message)}
+
+<br><br>
+
+Hakikisha Firestore Rules
+zinaruhusu admin kusoma
+collection:
+
+<strong>
+payments
+</strong>
+
+</div>
+
+`;
+
+}
+
+
+
+/* ================= RENDER PAYMENTS ================= */
+
+function renderPayments(){
+
+const container =
+document.getElementById(
+"paymentList"
+);
+
+
+let pending = 0;
+
+let approved = 0;
+
+let rejected = 0;
+
+
+paymentCache.forEach(
+payment => {
+
+
+const status =
+String(
+payment.status ||
+"pending"
+)
+.toLowerCase();
+
+
+if(status === "approved"){
+
+approved++;
+
+}
+
+else if(status === "rejected"){
+
+rejected++;
+
+}
+
+else{
+
+pending++;
+
+}
+
+});
+
+
+document
+.getElementById(
+"pendingCount"
+)
+.textContent =
+pending;
+
+
+document
+.getElementById(
+"approvedCount"
+)
+.textContent =
+approved;
+
+
+document
+.getElementById(
+"rejectedCount"
+)
+.textContent =
+rejected;
+
+
+
+if(!paymentCache.length){
+
+container.innerHTML = `
+
+<div class="no-payments">
+
+💰
+
+<strong>
+Hakuna malipo bado.
+</strong>
+
+<br><br>
+
+Malipo mapya yakitumwa
+na users yataonekana hapa.
+
+<br><br>
+
+<small>
+
+Collection:
+
+<strong>
+payments
+</strong>
+
+</small>
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+container.innerHTML = "";
+
+
+paymentCache.forEach(
+payment => {
+
+container.appendChild(
+createPaymentCard(payment)
+);
+
+});
+
+}
+
+
+
+/* ================= PAYMENT CARD ================= */
+
+function createPaymentCard(payment){
+
+const card =
+document.createElement(
+"div"
+);
+
+
+card.className =
+"payment-card";
+
+
+const status =
+String(
+payment.status ||
+"pending"
+)
+.toLowerCase();
+
+
+let statusText =
+"⏳ PENDING";
+
+
+let statusClass =
+"status-pending";
+
+
+if(status === "approved"){
+
+statusText =
+"✅ APPROVED";
+
+statusClass =
+"status-approved";
+
+}
+
+
+if(status === "rejected"){
+
+statusText =
+"❌ REJECTED";
+
+statusClass =
+"status-rejected";
+
+}
+
+
+
+const movieTitle =
+payment.movieTitle ||
+payment.movieName ||
+payment.title ||
+payment.name ||
+"-";
+
+
+const userEmail =
+payment.userEmail ||
+payment.email ||
+payment.user ||
+"-";
+
+
+const phone =
+payment.phone ||
+payment.phoneNumber ||
+payment.airtelNumber ||
+payment.mobile ||
+"-";
+
+
+const transactionId =
+payment.transactionId ||
+payment.transactionID ||
+payment.transaction ||
+payment.txnId ||
+payment.reference ||
+"-";
+
+
+const amount =
+payment.amount ??
+payment.price ??
+payment.totalAmount ??
+0;
+
+
+const movieId =
+payment.movieId ||
+payment.movieID ||
+payment.productId ||
+"-";
+
+
+const dateText =
+formatDate(
+payment.createdAt
+);
+
+
+const approvedBy =
+payment.approvedBy ||
+"-";
+
+
+const rejectedBy =
+payment.rejectedBy ||
+"-";
+
+
+const rejectionReason =
+payment.rejectionReason ||
+"-";
+
+
+
+card.innerHTML = `
+
+<div class="payment-header">
+
+
+<h3>
+
+💳 ${
+escapeHtml(movieTitle)
+}
+
+</h3>
+
+
+<span
+class="payment-status ${statusClass}"
+>
+
+${statusText}
+
+</span>
+
+</div>
+
+
+
+<div class="payment-info">
+
+
+<div>
+
+<span class="payment-label">
+
+👤 User
+
+</span>
+
+
+<span class="payment-value">
+
+${escapeHtml(userEmail)}
+
+</span>
+
+</div>
+
+
+
+<div>
+
+<span class="payment-label">
+
+💵 Amount
+
+</span>
+
+
+<span class="payment-value">
+
+TSh ${
+escapeHtml(
+formatAmount(amount)
+)
+}
+
+</span>
+
+</div>
+
+
+
+<div>
+
+<span class="payment-label">
+
+📱 Airtel Number
+
+</span>
+
+
+<span class="payment-value">
+
+${escapeHtml(phone)}
+
+</span>
+
+</div>
+
+
+
+<div>
+
+<span class="payment-label">
+
+🧾 Transaction ID
+
+</span>
+
+
+<span class="payment-value">
+
+${escapeHtml(transactionId)}
+
+</span>
+
+</div>
+
+
+
+<div>
+
+<span class="payment-label">
+
+🎬 Movie ID
+
+</span>
+
+
+<span class="payment-value">
+
+${escapeHtml(movieId)}
+
+</span>
+
+</div>
+
+
+
+<div>
+
+<span class="payment-label">
+
+🕒 Tarehe
+
+</span>
+
+
+<span class="payment-value">
+
+${escapeHtml(dateText)}
+
+</span>
+
+</div>
+
+
+
+${
+status === "approved"
+?
+
+`
+
+<div>
+
+<span class="payment-label">
+
+👨‍💼 Approved By
+
+</span>
+
+
+<span class="payment-value">
+
+${escapeHtml(approvedBy)}
+
+</span>
+
+</div>
+
+`
+
+:
+
+""
+}
+
+
+
+${
+status === "rejected"
+?
+
+`
+
+<div>
+
+<span class="payment-label">
+
+👨‍💼 Rejected By
+
+</span>
+
+
+<span class="payment-value">
+
+${escapeHtml(rejectedBy)}
+
+</span>
+
+
+<span class="payment-label">
+
+📝 Sababu
+
+</span>
+
+
+<span class="payment-value">
+
+${escapeHtml(rejectionReason)}
+
+</span>
+
+</div>
+
+`
+
+:
+
+""
+}
+
+</div>
+
+
+
+${
+status === "pending"
+?
+
+`
+
+<div class="payment-actions">
+
+
+<button
+type="button"
+class="approve-btn"
+onclick="approvePayment('${escapeAttr(payment.id)}')"
+>
+
+✅ APPROVE PAYMENT
+
+</button>
+
+
+
+<button
+type="button"
+class="reject-btn"
+onclick="rejectPayment('${escapeAttr(payment.id)}')"
+>
+
+❌ REJECT
+
+</button>
+
+
+</div>
+
+`
+
+:
+
+""
+}
+
+`;
+
+
+return card;
+
+}
+
+
+
+/* ================= FORMAT AMOUNT ================= */
+
+function formatAmount(amount){
+
+return (
+Number(amount) || 0
+)
+.toLocaleString(
+"sw-TZ"
+);
+
+}
+
+
+
+/* ================= FORMAT DATE ================= */
+
+function formatDate(timestamp){
+
+if(!timestamp)
+return "Haijulikani";
+
+
+try{
+
+
+if(
+timestamp.toDate &&
+typeof timestamp.toDate ===
+"function"
+){
+
+return timestamp
+.toDate()
+.toLocaleString(
+"sw-TZ",
+{
+dateStyle:"medium",
+timeStyle:"short"
+}
+);
+
+}
+
+
+if(timestamp.seconds){
+
+return new Date(
+Number(timestamp.seconds)*1000
+)
+.toLocaleString(
+"sw-TZ",
+{
+dateStyle:"medium",
+timeStyle:"short"
+}
+);
+
+}
+
+
+return "Haijulikani";
+
+
+}catch(error){
+
+return "Haijulikani";
+
+}
+
+}
+
+
+
+/* =====================================================
+   APPROVE PAYMENT
+===================================================== */
+
+async function approvePayment(
+paymentId
+){
+
+const payment =
+paymentCache.find(
+item =>
+item.id === paymentId
+);
+
+
+if(!payment){
+
+alert(
+"❌ Payment haipatikani."
+);
+
+return;
+
+}
+
+
+if(
+String(payment.status)
+.toLowerCase() ===
+"approved"
+){
+
+alert(
+"✅ Payment hii tayari ime-approve."
+);
+
+return;
+
+}
+
+
+const movieTitle =
+payment.movieTitle ||
+payment.movieName ||
+payment.title ||
+payment.name ||
+"Movie";
+
+
+const amount =
+payment.amount ??
+payment.price ??
+payment.totalAmount ??
+0;
+
+
+const transactionId =
+payment.transactionId ||
+payment.transactionID ||
+payment.transaction ||
+payment.txnId ||
+payment.reference ||
+"-";
+
+
+const confirmed =
+confirm(
+
+"THIBITISHA MALIPO\n\n" +
+
+"Movie: " +
+movieTitle +
+
+"\n\n" +
+
+"Amount: TSh " +
+Number(amount)
+.toLocaleString(
+"sw-TZ"
+) +
+
+"\n\n" +
+
+"Transaction ID: " +
+transactionId +
+
+"\n\n" +
+
+"Umehakikisha pesa imeingia Airtel Money yako?"
+
+);
+
+
+if(!confirmed)
+return;
+
+
+const user =
+auth.currentUser;
+
+
+if(!user){
+
+alert(
+"❌ Admin hajaingia kwenye account."
+);
+
+return;
+
+}
+
+
+try{
+
+
+await db
+.collection("payments")
+.doc(paymentId)
+.update({
+
+status:
+"approved",
+
+approvedAt:
+firebase.firestore
+.FieldValue
+.serverTimestamp(),
+
+approvedBy:
+user.email ||
+user.uid
+
+});
+
+
+alert(
+"✅ MALIPO YAME-APPROVE."
+);
+
+
+}catch(error){
+
+console.error(
+"APPROVE ERROR:",
+error
+);
+
+
+alert(
+
+"❌ Imeshindikana ku-approve payment:\n\n" +
+
+error.message
+
+);
+
+}
+
+}
+
+
+
+/* =====================================================
+   REJECT PAYMENT
+===================================================== */
+
+async function rejectPayment(
+paymentId
+){
+
+const payment =
+paymentCache.find(
+item =>
+item.id === paymentId
+);
+
+
+if(!payment){
+
+alert(
+"❌ Payment haipatikani."
+);
+
+return;
+
+}
+
+
+if(
+String(payment.status)
+.toLowerCase() ===
+"rejected"
+){
+
+alert(
+"❌ Payment hii tayari ime-reject."
+);
+
+return;
+
+}
+
+
+const reason =
+prompt(
+"Andika sababu ya kukataa malipo:"
+);
+
+
+if(reason === null)
+return;
+
+
+const confirmed =
+confirm(
+"Una uhakika unataka REJECT payment hii?"
+);
+
+
+if(!confirmed)
+return;
+
+
+const user =
+auth.currentUser;
+
+
+if(!user){
+
+alert(
+"❌ Admin hajaingia."
+);
+
+return;
+
+}
+
+
+try{
+
+
+await db
+.collection("payments")
+.doc(paymentId)
+.update({
+
+status:
+"rejected",
+
+rejectedAt:
+firebase.firestore
+.FieldValue
+.serverTimestamp(),
+
+rejectedBy:
+user.email ||
+user.uid,
+
+rejectionReason:
+reason.trim()
+
+});
+
+
+alert(
+"❌ Payment imekataliwa."
+);
+
+
+}catch(error){
+
+console.error(
+"REJECT ERROR:",
+error
+);
+
+
+alert(
+
+"❌ Imeshindikana ku-reject payment:\n\n" +
+
+error.message
+
+);
+
+}
+
+}
+
+
+
+/* ================= AUTH ================= */
+
+auth.onAuthStateChanged(
+user => {
+
+
+if(!user){
+
+window.location.href =
+"admin.html";
+
+return;
+
+}
+
+
+console.log(
+"ADMIN LOGGED IN:",
+user.email
+);
+
+
+loadPayments();
+
+});
+
+
+
+/* ================= LOGOUT ================= */
+
+function logout(){
+
+auth.signOut()
+.then(() => {
+
+window.location.href =
+"admin.html";
+
+})
+.catch(error => {
+
+console.error(error);
+
+});
+
+}
+
+
+
+/* ================= HELPERS ================= */
+
+function escapeHtml(text){
+
+return String(text)
+
+.replace(
+/&/g,
+"&amp;"
+)
+
+.replace(
+/</g,
+"&lt;"
+)
+
+.replace(
+/>/g,
+"&gt;"
+)
+
+.replace(
+/"/g,
+"&quot;"
+)
+
+.replace(
+/'/g,
+"&#039;"
+);
+
+}
+
+
+function escapeAttr(text){
+
+return escapeHtml(text);
+
+}
+
+</script>
+
+</body>
+</html>

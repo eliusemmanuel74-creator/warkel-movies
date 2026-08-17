@@ -1,0 +1,1285 @@
+```html
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warkel Movies</title>
+
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  color:#fff;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 15% 20%,rgba(0,110,255,.85),transparent 35%),
+    radial-gradient(circle at 80% 25%,rgba(0,230,120,.75),transparent 35%),
+    radial-gradient(circle at 50% 85%,rgba(255,220,0,.65),transparent 40%),
+    linear-gradient(135deg,#001a4d,#006b4f,#806d00);
+  background-size:180% 180%,180% 180%,180% 180%,300% 300%;
+  animation:bgMove 15s ease-in-out infinite alternate;
+}
+
+@keyframes bgMove{
+  0%{background-position:0 0,100% 0,50% 100%,0 50%}
+  50%{background-position:60% 40%,20% 70%,80% 20%,50% 50%}
+  100%{background-position:100% 100%,0 100%,20% 0,100% 50%}
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:-100px;
+  background:
+    radial-gradient(circle at 20% 30%,rgba(0,120,255,.5),transparent 40%),
+    radial-gradient(circle at 75% 30%,rgba(0,255,140,.45),transparent 40%),
+    radial-gradient(circle at 50% 80%,rgba(255,230,0,.4),transparent 40%);
+  filter:blur(80px);
+  animation:blurMove 14s ease-in-out infinite alternate;
+  pointer-events:none;
+  z-index:-1;
+}
+
+@keyframes blurMove{
+  0%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(200px,120px) scale(1.2)}
+  100%{transform:translate(-150px,-100px) scale(.9)}
+}
+
+/* HEADER */
+header{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  padding:15px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  background:rgba(0,0,0,.72);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(255,255,255,.15);
+}
+
+.logo{
+  font-size:24px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.logo span{
+  display:inline-block;
+  animation:wave 2s ease-in-out infinite;
+}
+
+@keyframes wave{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-5px)}
+}
+
+.search{
+  width:100%;
+  max-width:400px;
+}
+
+.search input{
+  width:100%;
+  padding:12px 16px;
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:25px;
+  outline:none;
+  background:rgba(0,0,0,.5);
+  color:white;
+  font-size:15px;
+}
+
+/* HERO */
+.hero{
+  width:94%;
+  max-width:1200px;
+  margin:25px auto;
+  padding:40px 25px;
+  border-radius:22px;
+  text-align:center;
+  background:rgba(0,0,0,.45);
+  border:1px solid rgba(255,255,255,.15);
+  backdrop-filter:blur(15px);
+}
+
+.hero h1{
+  margin:0;
+  font-size:clamp(32px,6vw,60px);
+  font-weight:900;
+}
+
+.hero p{
+  color:#eee;
+}
+
+/* CONTENT */
+.container{
+  width:94%;
+  max-width:1200px;
+  margin:auto;
+}
+
+.section{
+  margin:30px 0;
+}
+
+.section-title{
+  font-size:25px;
+  margin-bottom:18px;
+  font-weight:900;
+}
+
+/* CATEGORIES */
+.categories{
+  display:flex;
+  gap:10px;
+  overflow-x:auto;
+  padding-bottom:12px;
+}
+
+.category-btn{
+  flex:0 0 auto;
+  padding:11px 17px;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:25px;
+  background:rgba(0,0,0,.5);
+  color:#fff;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.category-btn.active,
+.category-btn:hover{
+  background:linear-gradient(90deg,#006eff,#00b978);
+}
+
+/* MOVIES */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+  gap:18px;
+}
+
+.movie-card{
+  background:rgba(0,0,0,.65);
+  border-radius:15px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.14);
+  transition:.3s;
+  cursor:pointer;
+}
+
+.movie-card:hover{
+  transform:translateY(-6px);
+}
+
+.poster{
+  height:270px;
+  background:#111;
+}
+
+.poster img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+.card-info{
+  padding:12px;
+}
+
+.card-info h3{
+  margin:0 0 7px;
+  font-size:16px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.category-text{
+  color:#bbb;
+  font-size:12px;
+}
+
+.badge{
+  display:inline-block;
+  margin-top:8px;
+  padding:5px 9px;
+  border-radius:20px;
+  background:#00b978;
+  font-size:10px;
+  font-weight:bold;
+}
+
+.badge.paid{
+  background:#e3a900;
+  color:#111;
+}
+
+.price{
+  color:#ffd000;
+  font-weight:bold;
+  margin-top:7px;
+  font-size:13px;
+}
+
+/* SERIES */
+.series-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:15px;
+}
+
+.series-card{
+  background:rgba(0,0,0,.65);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:14px;
+  overflow:hidden;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.series-card:hover{
+  transform:translateY(-6px);
+}
+
+.series-card img{
+  width:100%;
+  height:220px;
+  object-fit:cover;
+}
+
+.series-info{
+  padding:10px;
+}
+
+.series-info h3{
+  margin:0 0 5px;
+  font-size:15px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.series-category{
+  color:#bbb;
+  font-size:12px;
+}
+
+.series-meta{
+  color:#ffe000;
+  font-size:11px;
+  font-weight:bold;
+  margin-top:7px;
+}
+
+/* MODAL */
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:5000;
+  background:rgba(0,0,0,.85);
+  backdrop-filter:blur(8px);
+  align-items:center;
+  justify-content:center;
+  padding:15px;
+}
+
+.modal.show{
+  display:flex;
+}
+
+.modal-box{
+  width:100%;
+  max-width:450px;
+  max-height:92vh;
+  overflow:auto;
+  background:#101010;
+  border-radius:18px;
+  padding:20px;
+  border:1px solid rgba(255,255,255,.15);
+}
+
+.close{
+  float:right;
+  background:#e83232;
+  color:#fff;
+  border:0;
+  border-radius:7px;
+  padding:7px 11px;
+  cursor:pointer;
+}
+
+.modal-poster{
+  width:100%;
+  max-height:350px;
+  object-fit:cover;
+  border-radius:10px;
+  margin:10px 0;
+}
+
+.btn{
+  width:100%;
+  display:block;
+  border:0;
+  border-radius:8px;
+  padding:13px;
+  margin-top:10px;
+  text-align:center;
+  text-decoration:none;
+  font-weight:bold;
+  cursor:pointer;
+  color:#fff;
+}
+
+.blue{background:#087cff}
+.green{background:#00a968}
+.gold{background:#e3a900;color:#111}
+
+.payment-box{
+  margin-top:15px;
+  padding:15px;
+  background:rgba(255,255,255,.06);
+  border-radius:12px;
+}
+
+.payment-number{
+  font-size:25px;
+  font-weight:900;
+  color:#00ff91;
+  text-align:center;
+  margin:10px 0;
+}
+
+.payment-name{
+  text-align:center;
+  font-weight:bold;
+}
+
+.payment-form input{
+  width:100%;
+  padding:12px;
+  margin:7px 0;
+  background:#181818;
+  border:1px solid #444;
+  border-radius:8px;
+  color:#fff;
+}
+
+.status{
+  margin-top:10px;
+  padding:10px;
+  border-radius:8px;
+  display:none;
+}
+
+.status.show{
+  display:block;
+}
+
+.season{
+  margin-top:12px;
+  padding:12px;
+  background:rgba(255,255,255,.05);
+  border-radius:10px;
+}
+
+.season-title{
+  color:#ffe000;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.episode{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  padding:8px;
+  margin-top:6px;
+  background:rgba(0,0,0,.5);
+  border-radius:7px;
+}
+
+.episode a{
+  padding:6px 8px;
+  border-radius:5px;
+  color:#fff;
+  text-decoration:none;
+  font-size:11px;
+}
+
+footer{
+  margin-top:45px;
+  padding:25px;
+  text-align:center;
+  background:rgba(0,0,0,.6);
+}
+
+@media(max-width:650px){
+  header{
+    flex-direction:column;
+    padding:12px;
+  }
+
+  .search{
+    max-width:none;
+  }
+
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+    gap:11px;
+  }
+
+  .poster{
+    height:225px;
+  }
+
+  .series-grid{
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+  }
+
+  .series-card img{
+    height:200px;
+  }
+
+  .episode{
+    flex-direction:column;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">
+🎬 <span>Warkel Movies</span>
+</div>
+
+<div class="search">
+<input
+id="search"
+type="search"
+placeholder="🔎 Tafuta movie au series..."
+oninput="searchContent()">
+</div>
+
+</header>
+
+<section class="hero">
+
+<h1>🎬 Warkel Movies</h1>
+
+<p>
+Karibu Warkel Movies — Tazama na pakua movies pamoja na TV Series.
+</p>
+
+</section>
+
+<main class="container">
+
+<section class="section">
+
+<div class="section-title">📂 Categories</div>
+
+<div class="categories">
+
+<button class="category-btn active"
+onclick="filterCategory('All',this)">
+🔥 Zote
+</button>
+
+<button class="category-btn"
+onclick="filterCategory('Action',this)">
+🎬 Action
+</button>
+
+<button class="category-btn"
+onclick="filterCategory('Comedy',this)">
+😂 Comedy
+</button>
+
+<button class="category-btn"
+onclick="filterCategory('Horror',this)">
+👻 Horror
+</button>
+
+<button class="category-btn"
+onclick="filterCategory('Drama',this)">
+❤️ Drama
+</button>
+
+<button class="category-btn"
+onclick="filterCategory('Animation',this)">
+🎨 Animation
+</button>
+
+<button class="category-btn"
+onclick="filterCategory('Translated',this)">
+🌍 Zilizotafsiriwa
+</button>
+
+</div>
+
+</section>
+
+<section class="section">
+
+<div class="section-title">🎬 Movies</div>
+
+<div id="movies" class="grid">
+<div class="loading">⏳ Inapakia Movies...</div>
+</div>
+
+</section>
+
+<section class="section">
+
+<div class="section-title">📺 TV Series</div>
+
+<div id="seriesList">
+<div class="loading">⏳ Inapakia Series...</div>
+</div>
+
+</section>
+
+</main>
+
+<!-- MOVIE MODAL -->
+
+<div id="movieModal" class="modal">
+
+<div class="modal-box">
+
+<button class="close" onclick="closeMovie()">✕</button>
+
+<h2 id="mTitle"></h2>
+
+<img id="mPoster" class="modal-poster">
+
+<p id="mDescription"></p>
+
+<div id="mCategory"></div>
+
+<div id="mPrice"></div>
+
+<div id="mButtons"></div>
+
+<div id="paymentArea"></div>
+
+</div>
+</div>
+
+<!-- SERIES MODAL -->
+
+<div id="seriesModal" class="modal">
+
+<div class="modal-box">
+
+<button class="close" onclick="closeSeries()">✕</button>
+
+<h2 id="sTitle"></h2>
+
+<img id="sPoster" class="modal-poster">
+
+<div id="sInfo"></div>
+
+<div id="sEpisodes"></div>
+
+</div>
+</div>
+
+<footer>
+🎬 <strong>Warkel Movies</strong>
+<br><br>
+© 2026 Warkel Movies — All Rights Reserved.
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore-compat.js"></script>
+
+<script>
+
+const firebaseConfig={
+apiKey:"AIzaSyDEqZX4tJ4Y8LnyuDCal_6OyF6bvEW5Dpk",
+authDomain:"warkel-movies.firebaseapp.com",
+projectId:"warkel-movies",
+storageBucket:"warkel-movies.firebasestorage.app",
+messagingSenderId:"1087357366041",
+appId:"1:1087357366041:web:b62ba5e42da9e0792f1f88"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db=firebase.firestore();
+
+let movies=[];
+let series=[];
+let category="All";
+let query="";
+let selectedMovie=null;
+let paymentUnsubscribe=null;
+
+/* MOVIES */
+
+db.collection("movies").onSnapshot(snapshot=>{
+
+movies=[];
+
+snapshot.forEach(doc=>{
+movies.push({
+id:doc.id,
+...doc.data()
+});
+});
+
+renderMovies();
+
+},error=>{
+
+document.getElementById("movies").innerHTML=
+`<div class="loading">
+❌ ${escapeHtml(error.message)}
+</div>`;
+
+});
+
+/* SERIES */
+
+db.collection("series").onSnapshot(snapshot=>{
+
+series=[];
+
+snapshot.forEach(doc=>{
+series.push({
+id:doc.id,
+...doc.data()
+});
+});
+
+renderSeries();
+
+},error=>{
+
+document.getElementById("seriesList").innerHTML=
+`<div class="loading">
+❌ ${escapeHtml(error.message)}
+</div>`;
+
+});
+
+/* FILTER */
+
+function filterCategory(value,btn){
+
+category=value;
+
+document.querySelectorAll(".category-btn")
+.forEach(b=>b.classList.remove("active"));
+
+btn.classList.add("active");
+
+renderMovies();
+renderSeries();
+
+}
+
+function searchContent(){
+
+query=document
+.getElementById("search")
+.value
+.toLowerCase()
+.trim();
+
+renderMovies();
+renderSeries();
+
+}
+
+/* MOVIES */
+
+function renderMovies(){
+
+const box=document.getElementById("movies");
+
+const list=movies.filter(m=>{
+
+const title=String(m.title||"").toLowerCase();
+
+const cat=String(m.category||"");
+
+return (!query || title.includes(query)) &&
+(category==="All" || cat===category);
+
+});
+
+if(!list.length){
+
+box.innerHTML=
+`<div class="loading">🎬 Hakuna movie iliyopatikana.</div>`;
+
+return;
+
+}
+
+box.innerHTML="";
+
+list.forEach(movie=>{
+
+const paid=
+String(movie.type||"Free").toLowerCase()==="paid";
+
+const card=document.createElement("div");
+
+card.className="movie-card";
+
+card.innerHTML=`
+
+<div class="poster">
+
+<img
+src="${attr(movie.poster || "https://via.placeholder.com/300x400?text=Warkel+Movies")}"
+onerror="this.src='https://via.placeholder.com/300x400?text=Warkel+Movies'">
+
+</div>
+
+<div class="card-info">
+
+<h3>${escapeHtml(movie.title||"Untitled")}</h3>
+
+<div class="category-text">
+📂 ${escapeHtml(movie.category||"Other")}
+</div>
+
+<span class="badge ${paid?"paid":""}">
+${paid?"💰 PAID":"🆓 FREE"}
+</span>
+
+${paid?
+`<div class="price">
+TSh ${amount(movie.price)}
+</div>`:""}
+
+</div>
+`;
+
+card.onclick=()=>openMovie(movie);
+
+box.appendChild(card);
+
+});
+
+}
+
+/* MOVIE DETAILS */
+
+function openMovie(movie){
+
+selectedMovie=movie;
+
+document.getElementById("mTitle").textContent=
+movie.title||"Movie";
+
+document.getElementById("mPoster").src=
+movie.poster||
+"https://via.placeholder.com/300x400?text=Warkel+Movies";
+
+document.getElementById("mDescription").textContent=
+movie.description||
+"Hakuna maelezo ya movie.";
+
+const paid=
+String(movie.type||"Free").toLowerCase()==="paid";
+
+document.getElementById("mCategory").innerHTML=
+"📂 "+escapeHtml(movie.category||"Other");
+
+document.getElementById("mPrice").innerHTML=
+paid
+?
+`<p style="color:#ffd000;font-weight:bold">
+💰 Bei: TSh ${amount(movie.price)}
+</p>`
+:
+`<p style="color:#00ff91;font-weight:bold">
+🆓 FREE
+</p>`;
+
+if(paid){
+
+document.getElementById("mButtons").innerHTML=
+`<button class="btn gold" onclick="showPayment()">
+💰 LIPA NA DOWNLOAD
+</button>`;
+
+}else{
+
+document.getElementById("mButtons").innerHTML=`
+
+${movie.url?
+`<a class="btn blue"
+href="${attr(movie.url)}"
+target="_blank">
+▶️ WATCH MOVIE
+</a>`:""}
+
+${movie.downloadUrl?
+`<a class="btn green"
+href="${attr(movie.downloadUrl)}"
+target="_blank">
+⬇️ DOWNLOAD
+</a>`:""}
+
+`;
+
+}
+
+document.getElementById("paymentArea").innerHTML="";
+
+document.getElementById("movieModal")
+.classList.add("show");
+
+}
+
+/* PAYMENT */
+
+function showPayment(){
+
+document.getElementById("paymentArea").innerHTML=`
+
+<div class="payment-box">
+
+<h3>💰 Movie ya Kulipia</h3>
+
+<p>
+<strong>${escapeHtml(selectedMovie.title)}</strong>
+</p>
+
+<p>
+Bei:
+<strong style="color:#ffd000">
+TSh ${amount(selectedMovie.price)}
+</strong>
+</p>
+
+<p>
+Airtel Money
+</p>
+
+<div class="payment-number">
+0662289785
+</div>
+
+<div class="payment-name">
+Gosbert Godfrey
+</div>
+
+<p style="color:#bbb;font-size:13px">
+Tuma TSh ${amount(selectedMovie.price)}
+kwenye namba hiyo, kisha jaza taarifa zako hapa chini.
+</p>
+
+<form onsubmit="submitPayment(event)">
+
+<input
+id="customerName"
+class="payment-form"
+required
+placeholder="Jina lako">
+
+<input
+id="customerPhone"
+class="payment-form"
+required
+placeholder="Namba yako ya simu">
+
+<input
+id="transactionId"
+class="payment-form"
+required
+placeholder="Transaction ID">
+
+<button class="btn green">
+📤 TUMA TAARIFA
+</button>
+
+</form>
+
+<div id="payStatus" class="status"></div>
+
+</div>
+`;
+
+}
+
+/* SUBMIT PAYMENT */
+
+async function submitPayment(event){
+
+event.preventDefault();
+
+const status=document.getElementById("payStatus");
+
+status.className="status show";
+status.textContent="⏳ Inatuma...";
+
+try{
+
+const user=await getUser();
+
+const ref=await db.collection("payments").add({
+
+movieId:selectedMovie.id,
+
+movieTitle:selectedMovie.title||"",
+
+name:document
+.getElementById("customerName")
+.value.trim(),
+
+phone:document
+.getElementById("customerPhone")
+.value.trim(),
+
+transactionId:document
+.getElementById("transactionId")
+.value.trim(),
+
+amount:Number(selectedMovie.price)||0,
+
+price:Number(selectedMovie.price)||0,
+
+status:"pending",
+
+uid:user.uid,
+
+createdAt:
+firebase.firestore.FieldValue.serverTimestamp()
+
+});
+
+status.innerHTML=
+"✅ Taarifa zimetumwa.<br>Subiri Admin athibitishe payment yako.";
+
+watchPayment(ref.id);
+
+}catch(error){
+
+status.textContent=
+"❌ "+error.message;
+
+}
+
+}
+
+/* AUTH */
+
+async function getUser(){
+
+if(firebase.auth().currentUser){
+return firebase.auth().currentUser;
+}
+
+const result=
+await firebase.auth().signInAnonymously();
+
+return result.user;
+
+}
+
+/* CHECK PAYMENT */
+
+function watchPayment(id){
+
+if(paymentUnsubscribe){
+paymentUnsubscribe();
+}
+
+paymentUnsubscribe=
+db.collection("payments")
+.doc(id)
+.onSnapshot(doc=>{
+
+if(!doc.exists)return;
+
+const data=doc.data();
+
+if(data.status==="approved"){
+
+document.getElementById("paymentArea").innerHTML=`
+
+<div class="payment-box">
+
+<h3 style="color:#00ff91">
+✅ PAYMENT IMETHIBITISHWA
+</h3>
+
+<p>
+Sasa unaweza kupakua movie yako.
+</p>
+
+${
+selectedMovie.downloadUrl
+?
+`<a
+class="btn green"
+href="${attr(selectedMovie.downloadUrl)}"
+target="_blank">
+⬇️ DOWNLOAD MOVIE
+</a>`
+:
+`<p style="color:#ff5555">
+Download link haijawekwa.
+</p>`
+}
+
+</div>
+`;
+
+}
+
+if(data.status==="rejected"){
+
+document.getElementById("paymentArea").innerHTML=`
+
+<div class="payment-box">
+
+<h3 style="color:#ff5555">
+❌ PAYMENT IMEKATALIWA
+</h3>
+
+<p>
+Tafadhali wasiliana na Admin.
+</p>
+
+</div>
+`;
+
+}
+
+});
+
+}
+
+/* SERIES */
+
+function renderSeries(){
+
+const box=document.getElementById("seriesList");
+
+const list=series.filter(s=>{
+
+const title=String(s.title||"").toLowerCase();
+const cat=String(s.category||"");
+
+return (!query || title.includes(query)) &&
+(category==="All" || cat===category);
+
+});
+
+if(!list.length){
+
+box.innerHTML=
+`<div class="loading">📺 Hakuna Series iliyopatikana.</div>`;
+
+return;
+
+}
+
+box.innerHTML=`<div class="series-grid"></div>`;
+
+const grid=box.querySelector(".series-grid");
+
+list.forEach(item=>{
+
+const card=document.createElement("div");
+
+card.className="series-card";
+
+let episodes=0;
+
+(item.seasons||[]).forEach(s=>{
+episodes+=(s.episodes||[]).length;
+});
+
+card.innerHTML=`
+
+<img
+src="${attr(item.poster || "https://via.placeholder.com/300x400?text=Warkel+Movies")}"
+onerror="this.src='https://via.placeholder.com/300x400?text=Warkel+Movies'">
+
+<div class="series-info">
+
+<h3>
+${escapeHtml(item.title||"Untitled")}
+</h3>
+
+<div class="series-category">
+📂 ${escapeHtml(item.category||"Other")}
+</div>
+
+<div class="series-meta">
+📺 ${(item.seasons||[]).length} Season
+• ${episodes} Episodes
+</div>
+
+</div>
+`;
+
+card.onclick=()=>openSeries(item);
+
+grid.appendChild(card);
+
+});
+
+}
+
+/* OPEN SERIES */
+
+function openSeries(item){
+
+document.getElementById("sTitle")
+.textContent=item.title||"Series";
+
+document.getElementById("sPoster")
+.src=item.poster||
+"https://via.placeholder.com/300x400?text=Warkel+Movies";
+
+document.getElementById("sInfo").innerHTML=`
+
+<p>
+📂 ${escapeHtml(item.category||"Other")}
+</p>
+
+<span class="badge">
+${item.type==="Paid"?"💰 PAID":"🆓 FREE"}
+</span>
+
+`;
+
+let html="";
+
+(item.seasons||[]).forEach((season,index)=>{
+
+html+=`
+
+<div class="season">
+
+<div class="season-title">
+📺 ${escapeHtml(
+season.name || "Season "+(index+1)
+)}
+</div>
+
+`;
+
+(season.episodes||[]).forEach((ep,i)=>{
+
+html+=`
+
+<div class="episode">
+
+<span>
+🎞️ ${escapeHtml(
+ep.name || "Episode "+(i+1)
+)}
+</span>
+
+<span>
+
+${ep.url?
+`<a
+class="blue"
+href="${attr(ep.url)}"
+target="_blank">
+▶
+</a>`:""}
+
+${ep.downloadUrl?
+`<a
+class="green"
+href="${attr(ep.downloadUrl)}"
+target="_blank">
+⬇
+</a>`:""}
+
+</span>
+
+</div>
+
+`;
+
+});
+
+html+=`</div>`;
+
+});
+
+document.getElementById("sEpisodes").innerHTML=html;
+
+document.getElementById("seriesModal")
+.classList.add("show");
+
+}
+
+/* CLOSE */
+
+function closeMovie(){
+
+document.getElementById("movieModal")
+.classList.remove("show");
+
+if(paymentUnsubscribe){
+paymentUnsubscribe();
+paymentUnsubscribe=null;
+}
+
+}
+
+function closeSeries(){
+
+document.getElementById("seriesModal")
+.classList.remove("show");
+
+}
+
+/* HELPERS */
+
+function amount(value){
+return Number(value||0).toLocaleString("sw-TZ");
+}
+
+function escapeHtml(value){
+
+return String(value)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+function attr(value){
+return escapeHtml(value);
+}
+
+</script>
+
+</body>
+</html>
+```

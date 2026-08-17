@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Warkel Movies - Admin Login</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+html,body{
+margin:0;
+padding:0;
+width:100%;
+min-height:100%;
+}
+
+body{
+
+font-family:Arial,sans-serif;
+
+color:white;
+
+min-height:100vh;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+overflow:hidden;
+
+background:
+radial-gradient(
+circle at 15% 20%,
+rgba(255,0,80,.60),
+transparent 32%
+),
+
+radial-gradient(
+circle at 85% 20%,
+rgba(0,140,255,.60),
+transparent 32%
+),
+
+radial-gradient(
+circle at 50% 90%,
+rgba(0,255,130,.50),
+transparent 35%
+),
+
+linear-gradient(
+135deg,
+#030014,
+#001a3d,
+#003d2b
+);
+
+background-size:200% 200%;
+
+animation:
+backgroundMove 12s ease-in-out infinite alternate;
+
+}
+
+@keyframes backgroundMove{
+
+0%{
+background-position:0% 0%;
+}
+
+50%{
+background-position:100% 50%;
+}
+
+100%{
+background-position:0% 100%;
+}
+
+}
+
+
+/* LOGIN BOX */
+
+.login-box{
+
+width:92%;
+
+max-width:420px;
+
+padding:30px;
+
+border-radius:25px;
+
+background:
+rgba(255,255,255,.10);
+
+border:
+1px solid rgba(255,255,255,.25);
+
+backdrop-filter:
+blur(20px);
+
+-webkit-backdrop-filter:
+blur(20px);
+
+box-shadow:
+0 25px 70px
+rgba(0,0,0,.55);
+
+}
+
+
+/* LOGO */
+
+.logo{
+
+text-align:center;
+
+font-size:30px;
+
+font-weight:bold;
+
+margin-bottom:8px;
+
+}
+
+.subtitle{
+
+text-align:center;
+
+color:#ddd;
+
+margin-bottom:28px;
+
+}
+
+
+/* LABEL */
+
+label{
+
+display:block;
+
+font-weight:bold;
+
+margin-top:15px;
+
+margin-bottom:7px;
+
+}
+
+
+/* INPUT */
+
+input{
+
+width:100%;
+
+padding:14px;
+
+border-radius:12px;
+
+border:
+1px solid
+rgba(255,255,255,.20);
+
+background:
+rgba(0,0,0,.40);
+
+color:white;
+
+outline:none;
+
+font-size:15px;
+
+}
+
+input::placeholder{
+
+color:#aaa;
+
+}
+
+input:focus{
+
+border-color:#00ffd5;
+
+box-shadow:
+0 0 18px
+rgba(0,255,210,.25);
+
+}
+
+
+/* RAINBOW BUTTON */
+
+.login-btn{
+
+width:100%;
+
+padding:15px;
+
+margin-top:22px;
+
+border-radius:14px;
+
+border:
+1px solid
+rgba(255,255,255,.30);
+
+color:white;
+
+font-size:16px;
+
+font-weight:bold;
+
+cursor:pointer;
+
+background:
+
+linear-gradient(
+120deg,
+
+#ff004c,
+#ff8a00,
+#ffe600,
+#00e676,
+#00c8ff,
+#6c4cff,
+#ff00c8,
+#ff004c
+
+);
+
+background-size:400% 400%;
+
+animation:
+rainbow 7s linear infinite;
+
+box-shadow:
+
+0 10px 30px
+rgba(0,0,0,.40),
+
+inset
+0 1px
+rgba(255,255,255,.35);
+
+transition:.25s;
+
+}
+
+.login-btn:hover{
+
+transform:
+translateY(-2px)
+scale(1.01);
+
+box-shadow:
+
+0 15px 35px
+rgba(0,0,0,.55),
+
+0 0 25px
+rgba(255,255,255,.20);
+
+}
+
+.login-btn:active{
+
+transform:
+scale(.97);
+
+}
+
+.login-btn:disabled{
+
+opacity:.7;
+
+cursor:not-allowed;
+
+transform:none;
+
+}
+
+
+@keyframes rainbow{
+
+0%{
+background-position:0% 50%;
+}
+
+50%{
+background-position:100% 50%;
+}
+
+100%{
+background-position:0% 50%;
+}
+
+}
+
+
+/* ERROR */
+
+.error{
+
+display:none;
+
+margin-top:16px;
+
+padding:12px;
+
+border-radius:10px;
+
+background:
+rgba(255,0,0,.20);
+
+border:
+1px solid
+rgba(255,70,70,.40);
+
+color:#ffbaba;
+
+line-height:1.5;
+
+}
+
+
+/* LOADING */
+
+.loading{
+
+display:none;
+
+text-align:center;
+
+margin-top:15px;
+
+color:#ddd;
+
+}
+
+
+/* FORGOT */
+
+.forgot{
+
+display:block;
+
+text-align:center;
+
+margin-top:18px;
+
+color:#ccc;
+
+font-size:13px;
+
+}
+
+
+/* MOBILE */
+
+@media(max-width:500px){
+
+.login-box{
+
+padding:22px;
+
+}
+
+.logo{
+
+font-size:25px;
+
+}
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="login-box">
+
+
+<div class="logo">
+
+🎬 Warkel Movies
+
+</div>
+
+
+<div class="subtitle">
+
+🔐 Admin Login
+
+</div>
+
+
+<form id="loginForm">
+
+
+<label>
+
+Email
+
+</label>
+
+
+<input
+
+type="email"
+
+id="email"
+
+placeholder="Admin email"
+
+autocomplete="username"
+
+required
+
+>
+
+
+<label>
+
+Password
+
+</label>
+
+
+<input
+
+type="password"
+
+id="password"
+
+placeholder="Admin password"
+
+autocomplete="current-password"
+
+required
+
+>
+
+
+<button
+
+type="submit"
+
+class="login-btn"
+
+id="loginBtn"
+
+>
+
+🔐 LOGIN
+
+</button>
+
+
+</form>
+
+
+<div
+
+id="loading"
+
+class="loading"
+
+>
+
+⏳ Inaingia kwenye Admin Dashboard...
+
+</div>
+
+
+<div
+
+id="error"
+
+class="error"
+
+></div>
+
+
+<div class="forgot">
+
+Warkel Movies Admin Panel
+
+</div>
+
+
+</div>
+
+
+
+<!-- FIREBASE -->
+
+<script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-auth-compat.js"></script>
+
+
+
+<script>
+
+
+/* FIREBASE CONFIG */
+
+const firebaseConfig = {
+
+apiKey:
+"AIzaSyDEqZX4tJ4Y8LnyuDCal_6OyF6bvEW5Dpk",
+
+authDomain:
+"warkel-movies.firebaseapp.com",
+
+projectId:
+"warkel-movies",
+
+storageBucket:
+"warkel-movies.firebasestorage.app",
+
+messagingSenderId:
+"1087357366041",
+
+appId:
+"1:1087357366041:web:b62ba5e42da9e0792f1f88"
+
+};
+
+
+/* START FIREBASE */
+
+firebase.initializeApp(firebaseConfig);
+
+
+/* AUTH */
+
+const auth =
+firebase.auth();
+
+
+
+/* LOGIN */
+
+document
+.getElementById("loginForm")
+.addEventListener(
+"submit",
+async function(e){
+
+e.preventDefault();
+
+
+const email =
+document
+.getElementById("email")
+.value
+.trim();
+
+
+const password =
+document
+.getElementById("password")
+.value;
+
+
+const errorBox =
+document
+.getElementById("error");
+
+
+const loading =
+document
+.getElementById("loading");
+
+
+const loginBtn =
+document
+.getElementById("loginBtn");
+
+
+/* RESET */
+
+errorBox.style.display =
+"none";
+
+loading.style.display =
+"block";
+
+loginBtn.disabled =
+true;
+
+loginBtn.textContent =
+"⏳ LOGIN...";
+
+
+try{
+
+
+/* FIREBASE LOGIN */
+
+await auth
+.signInWithEmailAndPassword(
+email,
+password
+);
+
+
+/* LOGIN SUCCESS */
+
+loading.textContent =
+"✅ Login imefanikiwa. Inafungua Dashboard...";
+
+
+/* WAIT A LITTLE */
+
+setTimeout(
+function(){
+
+window.location.replace(
+"dashboard.html"
+);
+
+},
+700
+);
+
+
+}
+
+catch(error){
+
+
+console.error(error);
+
+
+loading.style.display =
+"none";
+
+loginBtn.disabled =
+false;
+
+loginBtn.textContent =
+"🔐 LOGIN";
+
+
+let message =
+"❌ Login imeshindikana.";
+
+
+if(
+error.code ===
+"auth/invalid-credential"
+){
+
+message =
+"❌ Email au password si sahihi.";
+
+}
+
+else if(
+error.code ===
+"auth/user-not-found"
+){
+
+message =
+"❌ Account hii haipo.";
+
+}
+
+else if(
+error.code ===
+"auth/wrong-password"
+){
+
+message =
+"❌ Password si sahihi.";
+
+}
+
+else if(
+error.code ===
+"auth/invalid-email"
+){
+
+message =
+"❌ Email uliyoandika si sahihi.";
+
+}
+
+else if(
+error.code ===
+"auth/too-many-requests"
+){
+
+message =
+"⚠️ Umejaribu mara nyingi. Subiri kidogo kisha ujaribu tena.";
+
+}
+
+else{
+
+message =
+"❌ "+error.message;
+
+}
+
+
+errorBox.textContent =
+message;
+
+errorBox.style.display =
+"block";
+
+
+}
+
+});
+
+
+
+</script>
+
+</body>
+
+</html>
